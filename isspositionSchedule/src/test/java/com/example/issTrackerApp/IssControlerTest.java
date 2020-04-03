@@ -2,7 +2,9 @@ package com.example.issTrackerApp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -34,11 +37,14 @@ public class IssControlerTest extends AbstractTest{
 	}
 	
 	@Test
+	@Scheduled(fixedDelay = 60000)
 	public void last10IssPos() throws Exception {
 	      String uri = "localhost:8080/last10Iss";
 	        
 	      MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(uri)
-	         .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+	         .accept(MediaType.APPLICATION_JSON_VALUE))
+	    		  .andExpect(content().contentType("application/json;charset=UTF-8"))
+	    		  .andReturn();
 	      
 	      int status = mvcResult.getResponse().getStatus();
 	      assertEquals(200, status);
@@ -48,8 +54,8 @@ public class IssControlerTest extends AbstractTest{
 	      assertTrue(las10Isslist.length == 10);
 	   }
 	@Test
-	public void addingNewPosition() {
-		
+	public void addingNewPosition() throws Exception{
+
 	}
 	
 }
